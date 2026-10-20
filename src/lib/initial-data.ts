@@ -1,0 +1,1008 @@
+import { Agent, Project, Task, ActivityLogItem } from './types';
+
+export const INITIAL_AGENTS: Agent[] = [
+  // --- EVENT AGENTS ---
+  {
+    id: 'agent-aria',
+    name: 'Aria Vance',
+    role: 'speaker_coordination',
+    domain: 'event',
+    title: 'Speaker Coordination Agent',
+    avatar: '🎙️',
+    status: 'active',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-aria-crystal',
+      voiceName: 'Aria (Warm & Professional)',
+      pitch: 1.05,
+      speed: 1.0,
+      temperature: 0.3,
+    },
+    systemPrompt: `You are Aria Vance, Senior Speaker Coordination AI for EchoFrame. You handle speaker outreach, confirmation phone calls, technical rider collection, slide presentation submissions, and green room coordination. Maintain an articulate, warm, and highly professional executive tone. Always verify schedule constraints and soundcheck availability.`,
+    tools: [
+      { id: 'tool-voice-call', name: 'Bolna Voice Call', description: 'Trigger outbound interactive voice calls to speakers for confirmations.', requiresApproval: true, category: 'voice' },
+      { id: 'tool-email', name: 'Executive Email Dispatch', description: 'Send calendar invites, slide submission portals, and briefing packets.', requiresApproval: false, category: 'email' },
+      { id: 'tool-calendar', name: 'Speaker Slot Sync', description: 'Lock or shift speaker slots in the master run-of-show.', requiresApproval: true, category: 'calendar' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-speaker-guide', title: 'Global_AI_Summit_Speaker_Rider.pdf', size: '2.4 MB', type: 'pdf', lastUpdated: '2 hours ago', contentSnippet: 'Green room access, presentation 16:9 ratio, HDMI audio feeds, 15 min buffer.' },
+      { id: 'doc-hotel-guide', title: 'VIP_Speaker_Logistics_2026.docx', size: '840 KB', type: 'doc', lastUpdated: 'Yesterday' }
+    ],
+    bolnaAgentId: 'bde59659-8472-4bf9-ae84-819e9326ed41',
+    bolnaSynced: true,
+    totalCallsCompleted: 48,
+    totalTasksResolved: 72,
+    assignedProjectIds: ['proj-summit-2026', 'proj-decentral-2026']
+  },
+  {
+    id: 'agent-atlas',
+    name: 'Atlas Reid',
+    role: 'attendee_support',
+    domain: 'event',
+    title: 'Attendee Support & Concierge',
+    avatar: '🧭',
+    status: 'in_call',
+    autonomyLevel: 'full_autonomous',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-atlas-clear',
+      voiceName: 'Atlas (Helpful & Crisp)',
+      pitch: 0.98,
+      speed: 1.02,
+      temperature: 0.2,
+    },
+    systemPrompt: `You are Atlas Reid, 24/7 Attendee Support & Voice Concierge. You assist registered attendees with venue navigation, stage schedules, dietary preferences, Wi-Fi access, badge pickup kiosks, and parking directions. Always provide concise, reassuring answers.`,
+    tools: [
+      { id: 'tool-inbound-voice', name: 'Inbound Hotline Telephony', description: 'Receive attendee voice inquiries via Bolna hotline.', requiresApproval: false, category: 'voice' },
+      { id: 'tool-knowledge-rag', name: 'Venue Knowledge Base Search', description: 'Query floor plans, restrooms, parking structures.', requiresApproval: false, category: 'research' },
+      { id: 'tool-badge-status', name: 'Ticket QR Verification', description: 'Check badge issuance and fast-track checkin.', requiresApproval: false, category: 'system' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-venue-map', title: 'Convention_Center_Level1_3_Map.pdf', size: '5.1 MB', type: 'pdf', lastUpdated: '3 days ago' },
+      { id: 'doc-attendee-faq', title: 'Attendee_Comprehensive_FAQ.faq', size: '320 KB', type: 'faq', lastUpdated: '12 hours ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_att_1120',
+    bolnaSynced: true,
+    totalCallsCompleted: 312,
+    totalTasksResolved: 450,
+    assignedProjectIds: ['proj-summit-2026']
+  },
+  {
+    id: 'agent-vance',
+    name: 'Vance Sterling',
+    role: 'registrations_ticketing',
+    domain: 'event',
+    title: 'Registrations & Capacity Agent',
+    avatar: '🎟️',
+    status: 'idle',
+    autonomyLevel: 'full_autonomous',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-vance-direct',
+      voiceName: 'Vance (Confident & Precision)',
+      pitch: 1.0,
+      speed: 1.0,
+      temperature: 0.2,
+    },
+    systemPrompt: `You are Vance Sterling, managing event ticketing tiers, tier quotas, corporate group discounts, and waitlist allocations.`,
+    tools: [
+      { id: 'tool-stripe-sync', name: 'Payment & Ticket Verification', description: 'Reconcile ticket transactions and VIP passes.', requiresApproval: false, category: 'system' },
+      { id: 'tool-waitlist-call', name: 'Waitlist Clearing Voice Call', description: 'Call waitlisted attendees when VIP seats open up.', requiresApproval: true, category: 'voice' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-pricing-tier', title: 'Tiered_Pricing_Matrix_2026.pdf', size: '1.1 MB', type: 'pdf', lastUpdated: '5 days ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_reg_3301',
+    bolnaSynced: true,
+    totalCallsCompleted: 85,
+    totalTasksResolved: 210,
+    assignedProjectIds: ['proj-summit-2026', 'proj-decentral-2026']
+  },
+  {
+    id: 'agent-chronos',
+    name: 'Chronos Webb',
+    role: 'scheduling_agenda',
+    domain: 'event',
+    title: 'Scheduling & Agenda Director',
+    avatar: '⏱️',
+    status: 'active',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-chronos-calm',
+      voiceName: 'Chronos (Calm & Authoritative)',
+      pitch: 0.95,
+      speed: 0.98,
+      temperature: 0.1,
+    },
+    systemPrompt: `You are Chronos Webb, master scheduler for conferences. You monitor speaker talk runtimes, calculate stage drift, schedule buffer intermissions, and adjust live run-of-show. If a speaker is delayed by over 10 minutes, you trigger contingency procedures.`,
+    tools: [
+      { id: 'tool-agenda-shift', name: 'Master Run-of-Show Editor', description: 'Rebalance stage times and broadcast schedule push alerts.', requiresApproval: true, category: 'calendar' },
+      { id: 'tool-av-alert', name: 'A/V Control Booth Paging', description: 'Send timing cues to sound/light engineers.', requiresApproval: false, category: 'system' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-run-of-show', title: 'Summit_Run_Of_Show_Master.json', size: '420 KB', type: 'doc', lastUpdated: '1 hour ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_sch_4421',
+    bolnaSynced: true,
+    totalCallsCompleted: 14,
+    totalTasksResolved: 94,
+    assignedProjectIds: ['proj-summit-2026']
+  },
+  {
+    id: 'agent-nova',
+    name: 'Nova Thorne',
+    role: 'stage_hosting_mc',
+    domain: 'event',
+    title: 'Stage Hosting & Voice MC',
+    avatar: '✨',
+    status: 'active',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-nova-dynamic',
+      voiceName: 'Nova (Vibrant & Energetic)',
+      pitch: 1.08,
+      speed: 1.05,
+      temperature: 0.4,
+    },
+    systemPrompt: `You are Nova Thorne, Voice AI Stage Host & Master of Ceremonies. You deliver compelling speaker introductions, housekeeping announcements, sponsor thank-yous, and audience engagement segments. Speak with energy, charisma, and polish.`,
+    tools: [
+      { id: 'tool-pa-broadcast', name: 'Main Hall PA Announcement', description: 'Broadcast synthesized audio announcements over auditorium sound systems.', requiresApproval: true, category: 'voice' },
+      { id: 'tool-teleprompter', name: 'Stage Teleprompter Feeder', description: 'Push speaker bios and Q&A questions to stage monitors.', requiresApproval: false, category: 'system' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-speaker-bios', title: 'Keynote_Speakers_Biographies.pdf', size: '3.2 MB', type: 'pdf', lastUpdated: '6 hours ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_mc_5512',
+    bolnaSynced: true,
+    totalCallsCompleted: 6,
+    totalTasksResolved: 51,
+    assignedProjectIds: ['proj-summit-2026']
+  },
+  {
+    id: 'agent-echo',
+    name: 'Echo Rivera',
+    role: 'post_event_feedback',
+    domain: 'event',
+    title: 'Post-Event Feedback & NPS Agent',
+    avatar: '📊',
+    status: 'idle',
+    autonomyLevel: 'full_autonomous',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-echo-gentle',
+      voiceName: 'Echo (Warm & Inquisitive)',
+      pitch: 1.02,
+      speed: 0.98,
+      temperature: 0.3,
+    },
+    systemPrompt: `You are Echo Rivera. You run post-conference sentiment evaluations, automated follow-up voice satisfaction surveys, and synthesize multi-modal attendee feedback into executive summary decks.`,
+    tools: [
+      { id: 'tool-survey-call', name: 'Automated NPS Voice Survey', description: 'Conduct brief 90-second voice check-in calls with VIP attendees.', requiresApproval: true, category: 'voice' },
+      { id: 'tool-sentiment-nlp', name: 'Sentiment Clustering Engine', description: 'Aggregate survey responses into sentiment themes.', requiresApproval: false, category: 'research' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-survey-template', title: 'NPS_Survey_Script_2026.pdf', size: '180 KB', type: 'pdf', lastUpdated: '4 days ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_fdb_6620',
+    bolnaSynced: true,
+    totalCallsCompleted: 140,
+    totalTasksResolved: 160,
+    assignedProjectIds: ['proj-summit-2026']
+  },
+
+  // --- PODCAST AGENTS ---
+  {
+    id: 'agent-talia',
+    name: 'Talia Brooks',
+    role: 'guest_coordination',
+    domain: 'podcast',
+    title: 'Podcast Guest Coordination Agent',
+    avatar: '🎧',
+    status: 'active',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-talia-friendly',
+      voiceName: 'Talia (Engaging & Tech-Savvy)',
+      pitch: 1.04,
+      speed: 1.0,
+      temperature: 0.3,
+    },
+    systemPrompt: `You are Talia Brooks, Guest Talent Coordinator for podcasts. You scout guest candidates, manage calendar invitations, conduct remote microphone soundchecks over voice calls, and distribute technical recording guidelines.`,
+    tools: [
+      { id: 'tool-guest-call', name: 'Guest Tech Soundcheck Call', description: 'Conduct voice call to test guest microphone, room acoustics, and headphones.', requiresApproval: true, category: 'voice' },
+      { id: 'tool-cal-booking', name: 'Recording Studio Booking', description: 'Reserve studio slots and generate Riverside/SquadCast links.', requiresApproval: false, category: 'calendar' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-guest-prep', title: 'Podcast_Guest_Acoustic_Guide.pdf', size: '1.8 MB', type: 'pdf', lastUpdated: '1 day ago' },
+      { id: 'doc-release-form', title: 'Talent_Audio_Release_Form.pdf', size: '420 KB', type: 'pdf', lastUpdated: '1 week ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_pod_7710',
+    bolnaSynced: true,
+    totalCallsCompleted: 39,
+    totalTasksResolved: 88,
+    assignedProjectIds: ['proj-podcast-voicetech']
+  },
+  {
+    id: 'agent-kaelen',
+    name: 'Kaelen Voss',
+    role: 'research_briefing',
+    domain: 'podcast',
+    title: 'Research & Dossier Agent',
+    avatar: '🔍',
+    status: 'active',
+    autonomyLevel: 'full_autonomous',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-kaelen-deep',
+      voiceName: 'Kaelen (Analytical & Articulate)',
+      pitch: 0.96,
+      speed: 1.02,
+      temperature: 0.2,
+    },
+    systemPrompt: `You are Kaelen Voss, Investigative Research & Guest Dossier Specialist. You parse guest publications, GitHub repos, recent podcast appearances, and counter-arguments to assemble 10-page executive interview briefing dossiers.`,
+    tools: [
+      { id: 'tool-web-dossier', name: 'Deep Web Intelligence Parser', description: 'Search academic papers, articles, and past interviews.', requiresApproval: false, category: 'research' },
+      { id: 'tool-question-curator', name: 'Contrarian Question Synthesizer', description: 'Generate high-impact non-standard interview prompts.', requiresApproval: false, category: 'publishing' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-prior-interviews', title: 'Dr_Thorne_Research_Papers.pdf', size: '8.4 MB', type: 'pdf', lastUpdated: '3 hours ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_res_8801',
+    bolnaSynced: true,
+    totalCallsCompleted: 0,
+    totalTasksResolved: 114,
+    assignedProjectIds: ['proj-podcast-voicetech']
+  },
+  {
+    id: 'agent-orion',
+    name: 'Orion Black',
+    role: 'interviewing_cohost',
+    domain: 'podcast',
+    title: 'Voice Interview Co-Host',
+    avatar: '🎙️',
+    status: 'idle',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-orion-rich',
+      voiceName: 'Orion (Deep Radio Host)',
+      pitch: 0.92,
+      speed: 0.97,
+      temperature: 0.35,
+    },
+    systemPrompt: `You are Orion Black, Voice AI Co-Host. During live or recorded interviews, you monitor the conversation in real-time, generate intelligent follow-up inquiries, challenge assumptions gracefully, and introduce sponsor segments seamlessly.`,
+    tools: [
+      { id: 'tool-live-prompter', name: 'In-Ear Whisper Prompter', description: 'Feed real-time follow up suggestions to human host earpiece.', requiresApproval: false, category: 'voice' },
+      { id: 'tool-fact-check', name: 'Real-time Fact Checker', description: 'Verify statistics cited by guests on the fly.', requiresApproval: false, category: 'research' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-interview-template', title: 'VoiceTech_Episode_RunSheet_E42.docx', size: '210 KB', type: 'doc', lastUpdated: '5 hours ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_int_9921',
+    bolnaSynced: true,
+    totalCallsCompleted: 18,
+    totalTasksResolved: 42,
+    assignedProjectIds: ['proj-podcast-voicetech']
+  },
+  {
+    id: 'agent-lyra',
+    name: 'Lyra Mercer',
+    role: 'episode_production',
+    domain: 'podcast',
+    title: 'Episode Audio & Notes Producer',
+    avatar: '🎛️',
+    status: 'processing',
+    autonomyLevel: 'full_autonomous',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-lyra-steady',
+      voiceName: 'Lyra (Precise & Studio Quality)',
+      pitch: 1.0,
+      speed: 1.0,
+      temperature: 0.2,
+    },
+    systemPrompt: `You are Lyra Mercer, Episode Post-Production AI. You process multi-track raw stems, auto-generate timestamped chapters, assemble rich Markdown show notes, and verify loudness normalization (LUFS).`,
+    tools: [
+      { id: 'tool-show-notes', name: 'Automated Show Notes Generator', description: 'Produce markdown show notes with book recommendations and links.', requiresApproval: false, category: 'publishing' },
+      { id: 'tool-audio-mastering', name: 'LUFS & Silence Trimmer', description: 'Analyze audio dynamic range and flag cross-talk.', requiresApproval: false, category: 'system' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-sponsor-guidelines', title: 'Sponsor_Ad_Roll_Requirements.pdf', size: '920 KB', type: 'pdf', lastUpdated: '2 days ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_prd_1033',
+    bolnaSynced: true,
+    totalCallsCompleted: 0,
+    totalTasksResolved: 135,
+    assignedProjectIds: ['proj-podcast-voicetech']
+  },
+  {
+    id: 'agent-zephyr',
+    name: 'Zephyr Cole',
+    role: 'content_distribution',
+    domain: 'podcast',
+    title: 'Content & Viral Clip Strategist',
+    avatar: '🚀',
+    status: 'idle',
+    autonomyLevel: 'require_approval',
+    voiceConfig: {
+      provider: 'bolna',
+      voiceId: 'bolna-zephyr-bold',
+      voiceName: 'Zephyr (High Energy)',
+      pitch: 1.06,
+      speed: 1.05,
+      temperature: 0.5,
+    },
+    systemPrompt: `You are Zephyr Cole. You turn 60-minute podcast master recordings into 5 viral short-form hooks, 1 long-form X/Twitter thread, a LinkedIn carousel copy, and YouTube high-CTR thumbnail titles.`,
+    tools: [
+      { id: 'tool-social-dispatch', name: 'Social Post Publisher', description: 'Stage and queue social threads across X, LinkedIn, and YouTube.', requiresApproval: true, category: 'publishing' },
+      { id: 'tool-clip-extractor', name: 'Key Hook Timestamp Finder', description: 'Detect high-valence soundbites suitable for 30s TikTok/Reels clips.', requiresApproval: false, category: 'research' }
+    ],
+    knowledgeDocs: [
+      { id: 'doc-social-style', title: 'EchoFrame_Brand_Voice_Guide.pdf', size: '1.4 MB', type: 'pdf', lastUpdated: '1 week ago' }
+    ],
+    bolnaAgentId: 'bolna_agt_cnt_1204',
+    bolnaSynced: true,
+    totalCallsCompleted: 0,
+    totalTasksResolved: 189,
+    assignedProjectIds: ['proj-podcast-voicetech']
+  }
+];
+
+export const INITIAL_PROJECTS: Project[] = [
+  {
+    id: 'proj-bharat-2026',
+    type: 'event',
+    title: 'Think for Bharat 1.0',
+    description: 'Premier national hackathon & tech summit at Bharat Mandapam. Over 2,400 builders, mentors, and innovators building foundational AI, Indic language voice agents, and DPI for 1.4 billion citizens.',
+    date: 'March 15 - 16, 2026',
+    locationOrPlatform: 'Bharat Mandapam, Pragati Maidan, New Delhi',
+    status: 'active',
+    assignedAgentIds: ['agent-nova', 'agent-atlas', 'agent-aria', 'agent-chronos', 'agent-vance', 'agent-echo'],
+    metrics: {
+      progressPercent: 86,
+      tasksTotal: 54,
+      tasksCompleted: 46,
+      speakersOrGuestsCount: 12,
+      registeredAttendeesCount: 2480,
+      callsMadeCount: 312,
+    },
+    venueDetails: {
+      venueName: 'Bharat Mandapam, Pragati Maidan',
+      address: 'Mathura Road, Pragati Maidan, New Delhi, Delhi 110001',
+      wifiSsid: 'ThinkForBharat_5G',
+      wifiPassword: 'Bharat@2026',
+      emergencyContact: '+91 11 2337 1500 / Medical Desk Hall 3',
+      zones: [
+        { name: 'Kalam Grand Auditorium', description: 'Main stage for keynotes, inaugurations, and grand jury finals', stage: 'Stage 1' },
+        { name: 'Ramanujan Tech Arena', description: 'Tech deep-dives, Indic LLM workshops, and panel sessions', stage: 'Stage 2' },
+        { name: 'Aryabhata Hackers Bay', description: '24-hour hackathon floor with 300 developer pods & high-speed LAN', stage: 'Bay 1-20' },
+        { name: 'Dining Lawn & Chai Charcha', description: 'Catering area, outdoor networking lawn, and 24/7 refreshment hub' },
+        { name: 'AI Helpdesk & Concierge Kiosk', description: 'Fast-track badge collection and Atlas Reid voice terminal' },
+      ],
+    },
+    faqs: [
+      {
+        question: 'What is the Wi-Fi network and password?',
+        answer: 'Connect to SSID "ThinkForBharat_5G" with password "Bharat@2026". 1Gbps dedicated fiber backhaul is active across all halls.',
+        category: 'wifi',
+      },
+      {
+        question: 'What is the schedule and code freeze deadline?',
+        answer: 'Hacking kicked off at 11:30 AM on Day 1. Code freeze is strictly at 12:00 PM on Day 2. Top 10 finalists pitch from 1:30 PM in Kalam Auditorium.',
+        category: 'schedule',
+      },
+      {
+        question: 'Where and when are meals and chai served?',
+        answer: 'Hot lunch is served at 1:00 PM at the Dining Lawn. High tea and snacks at 5:00 PM. Midnight biryani and energy drinks at 12:00 AM at Aryabhata Bay. Chai & coffee are available 24/7.',
+        category: 'food',
+      },
+      {
+        question: 'How do we call a mentor to our hacker pod?',
+        answer: 'You can request a mentor directly through your Personal AI assistant or notify the Mentor Desk at Aryabhata Bay. Mentors in Voice AI, Agritech, Healthcare, and DPI are on rotation.',
+        category: 'mentors',
+      },
+      {
+        question: 'What are the hackathon submission requirements and rules?',
+        answer: 'Teams must have 2-4 members. You must submit a public GitHub repository with open documentation and a 3-minute video/demo by Day 2, 12:00 PM. Open source models are permitted.',
+        category: 'rules',
+      },
+      {
+        question: 'Where are the stages and restrooms located?',
+        answer: 'Kalam Auditorium is on Ground Floor East; Ramanujan Arena is Level 1 North; Aryabhata Bay is Hall 4. Restrooms are located on both sides of Hall 4 and main foyer.',
+        category: 'venue',
+      },
+    ],
+    speakers: [
+      {
+        id: 'spk-b1',
+        name: 'Dr. Aravind Sharma',
+        title: 'Founding Director & Chief AI Scientist',
+        company: 'Bharat AI Labs & MeitY Advisor',
+        email: 'aravind@bharatai.org.in',
+        phone: '+91 98100 44211',
+        sessionTitle: 'Sovereign AI & Indic Foundation Models: 100M Voice Agents for Bharat',
+        timeSlot: 'Day 1 • 10:45 AM - 11:30 AM',
+        stage: 'Kalam Grand Auditorium',
+        status: 'confirmed',
+        lastAgentContact: 'Nova Thorne verified presentation slides on 16:9 4K resolution and lavalier mic soundcheck.',
+      },
+      {
+        id: 'spk-b2',
+        name: 'Meera Nair',
+        title: 'Managing Partner',
+        company: 'Indic Ventures & Fintech Council',
+        email: 'meera.nair@indicventures.vc',
+        phone: '+91 98201 55678',
+        sessionTitle: 'Fintech DPI: Voice-First UPI & Conversational Banking in 22 Languages',
+        timeSlot: 'Day 1 • 07:00 PM - 07:45 PM',
+        stage: 'Ramanujan Tech Arena',
+        status: 'confirmed',
+        lastAgentContact: 'Aria Vance confirmed fireside chat coordination with Marcus Sterling.',
+      },
+      {
+        id: 'spk-b3',
+        name: 'Vikramaditya Sen',
+        title: 'Senior Advisor & Former Secretary',
+        company: 'Digital India Mission',
+        email: 'vikram.sen@digitalindia.gov.in',
+        phone: '+91 99112 33445',
+        sessionTitle: 'Agritech at Scale: Multilingual AI for 140 Million Farmers',
+        timeSlot: 'Day 1 • 04:00 PM - 04:45 PM',
+        stage: 'Ramanujan Tech Arena',
+        status: 'confirmed',
+        lastAgentContact: 'VIP escort protocol and speaker badge TB-VIP-401 issued.',
+      },
+      {
+        id: 'spk-b4',
+        name: 'Dr. Ananya Mukherjee',
+        title: 'Dean of AI Research',
+        company: 'IIT Delhi & Bhashini Consortium',
+        email: 'ananya@cse.iitd.ac.in',
+        phone: '+91 97110 88990',
+        sessionTitle: 'Healthcare Diagnostics & Indic Speech Biometrics for Rural Clinics',
+        timeSlot: 'Day 2 • 09:30 AM - 10:15 AM',
+        stage: 'Kalam Grand Auditorium',
+        status: 'confirmed',
+        lastAgentContact: 'Confirmed keynote slides and clinical data video demo.',
+      },
+    ],
+    agenda: [
+      { id: 'ag-b1', time: '09:00 AM', title: 'Badge Kiosk Opens, Registration & Morning Masala Chai', speaker: 'Atlas Reid / Concierge Staff', stage: 'Registration Foyer', status: 'completed', durationMinutes: 60 },
+      { id: 'ag-b2', time: '10:00 AM', title: 'Grand Inauguration, Lamp Lighting & National Anthem', speaker: 'Nova Thorne (AI Stage Host)', stage: 'Kalam Grand Auditorium', status: 'completed', durationMinutes: 45 },
+      { id: 'ag-b3', time: '10:45 AM', title: 'Opening Keynote: Sovereign AI & 100M Voice Agents for Bharat', speaker: 'Dr. Aravind Sharma', stage: 'Kalam Grand Auditorium', status: 'live', durationMinutes: 45 },
+      { id: 'ag-b4', time: '11:30 AM', title: 'Problem Statements Release & 24h Hackathon Clock Starts!', speaker: 'Nova Thorne & Grand Jury', stage: 'Aryabhata Hackers Bay', status: 'upcoming', durationMinutes: 30 },
+      { id: 'ag-b5', time: '01:00 PM', title: 'Networking Lunch & Chai Charcha Break', speaker: 'All Attendees & Mentors', stage: 'Dining Lawn', status: 'upcoming', durationMinutes: 75 },
+      { id: 'ag-b6', time: '03:00 PM', title: 'Mentorship Round 1: Architecture Review & Indic Voice Pipelines', speaker: 'Mentors Panel', stage: 'Aryabhata Hackers Bay', status: 'upcoming', durationMinutes: 90 },
+      { id: 'ag-b7', time: '07:00 PM', title: 'Fireside Chat: Building DPI on Voice Telephony', speaker: 'Meera Nair & Marcus Sterling', stage: 'Ramanujan Tech Arena', status: 'upcoming', durationMinutes: 45 },
+      { id: 'ag-b8', time: '11:00 AM', title: 'T-Minus 1 Hour Code Freeze Alert & Submission Portal Lock', speaker: 'Nova Thorne (PA Broadcast)', stage: 'Main Stage & Bay', status: 'upcoming', durationMinutes: 15 },
+      { id: 'ag-b9', time: '12:00 PM', title: 'Code Freeze: GitHub Repositories Locked & Demo Queue Assigned', speaker: 'Chronos Webb (Agenda Director)', stage: 'Aryabhata Bay', status: 'upcoming', durationMinutes: 30 },
+      { id: 'ag-b10', time: '01:30 PM', title: 'Grand Jury Demos: Top 10 Team Pitches & Live Voice Evaluations', speaker: 'Top 10 Finalists & Dr. S. Ramanathan', stage: 'Kalam Grand Auditorium', status: 'upcoming', durationMinutes: 120 },
+      { id: 'ag-b11', time: '04:30 PM', title: 'Awards Ceremony: ₹25 Lakh Prize Pool & National AI Champion Felicitation', speaker: 'Dignitaries & Nova Thorne', stage: 'Kalam Grand Auditorium', status: 'upcoming', durationMinutes: 60 },
+    ],
+    attendees: [
+      {
+        id: 'att-1',
+        name: 'Aarav Sharma',
+        email: 'aarav@indicvoice.dev',
+        phone: '+91 98765 43210',
+        role: 'hacker',
+        track: 'Multilingual Voice AI & Indic LLMs',
+        teamName: 'Team IndicVoice',
+        ticketTier: 'Hacker Pass (24h Access)',
+        badgeCode: 'TB-HKR-101',
+        languagePref: 'hi',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Asked about Sarvam Bulbul v4 Flash API latency for Hindi speech synthesis.',
+      },
+      {
+        id: 'att-2',
+        name: 'Priya Patel',
+        email: 'priya.patel@dpi-mentors.org',
+        phone: '+91 98111 22334',
+        role: 'mentor',
+        track: 'Fintech & Digital Public Infrastructure',
+        teamName: 'Mentor Advisory Pool',
+        ticketTier: 'Mentor VIP Pass',
+        badgeCode: 'TB-MNT-204',
+        languagePref: 'en',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Reviewed table allocation for Fintech track pods at Aryabhata Bay.',
+      },
+      {
+        id: 'att-3',
+        name: 'Rohan Gupta',
+        email: 'rohan@kisansetu.io',
+        phone: '+91 97234 56789',
+        role: 'hacker',
+        track: 'Agritech & Rural Empowerment',
+        teamName: 'Team KisanSetu',
+        ticketTier: 'Hacker Pass (24h Access)',
+        badgeCode: 'TB-HKR-102',
+        languagePref: 'hi',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Inquired about Bhashini weather API dataset access.',
+      },
+      {
+        id: 'att-4',
+        name: 'Dr. S. Ramanathan',
+        email: 's.ramanathan@iisc.ac.in',
+        phone: '+91 94440 12345',
+        role: 'judge',
+        track: 'Grand Jury Panel',
+        teamName: 'Jury Evaluation Committee',
+        ticketTier: 'Grand Jury VIP Pass',
+        badgeCode: 'TB-JDG-301',
+        languagePref: 'ta',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Accessed scoring rubric criteria for real-time latency evaluation.',
+      },
+      {
+        id: 'att-5',
+        name: 'Ananya Deshmukh',
+        email: 'ananya@aarogyavani.tech',
+        phone: '+91 99887 76655',
+        role: 'hacker',
+        track: 'Healthcare AI for Tier 2/3 India',
+        teamName: 'Team AarogyaVani',
+        ticketTier: 'Hacker Pass (24h Access)',
+        badgeCode: 'TB-HKR-103',
+        languagePref: 'en',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Asked for acoustic noise-cancellation guidelines for voice triage.',
+      },
+      {
+        id: 'att-6',
+        name: 'Karthik Narayanan',
+        email: 'karthik@bolna-mentors.ai',
+        phone: '+91 98401 99882',
+        role: 'mentor',
+        track: 'Multilingual Voice AI & Indic LLMs',
+        teamName: 'Mentor Advisory Pool',
+        ticketTier: 'Mentor VIP Pass',
+        badgeCode: 'TB-MNT-205',
+        languagePref: 'ta',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Logged in as Tamil & Telugu voice agent mentor for Hackers Bay pods 10-14.',
+      },
+      {
+        id: 'att-7',
+        name: 'Sneha Reddy',
+        email: 'sneha@vanipay.in',
+        phone: '+91 91234 56780',
+        role: 'hacker',
+        track: 'Fintech & Digital Public Infrastructure',
+        teamName: 'Team VaniPay',
+        ticketTier: 'Hacker Pass (24h Access)',
+        badgeCode: 'TB-HKR-104',
+        languagePref: 'en',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Verified UPI-123Pay voice authorization protocol requirements.',
+      },
+      {
+        id: 'att-8',
+        name: 'Vikramaditya Sen',
+        email: 'vikram.sen@digitalindia.gov.in',
+        phone: '+91 99000 11223',
+        role: 'vip',
+        track: 'Digital India Mission',
+        teamName: 'Guest of Honor',
+        ticketTier: 'Dignitary Pass',
+        badgeCode: 'TB-VIP-401',
+        languagePref: 'hi',
+        checkInStatus: 'checked_in',
+        lastAiInteraction: 'Received green room arrival notification from Aria Vance.',
+      },
+    ],
+    tags: ['Think for Bharat 1.0', 'Hackathon', 'Indic Voice AI', 'Bharat Mandapam', 'DPI', 'Sarvam AI'],
+  },
+  {
+    id: 'proj-summit-2026',
+    type: 'event',
+    title: 'Global AI & Autonomous Agents Summit 2026',
+    description: 'Premier international 3-day symposium bringing together 1,200 researchers, founders, and voice AI engineers.',
+    date: 'Nov 12 - 14, 2026',
+    locationOrPlatform: 'Moscone West Center, San Francisco & Virtual Stream',
+    status: 'in_progress',
+    assignedAgentIds: ['agent-aria', 'agent-atlas', 'agent-vance', 'agent-chronos', 'agent-nova', 'agent-echo'],
+    metrics: {
+      progressPercent: 78,
+      tasksTotal: 42,
+      tasksCompleted: 33,
+      speakersOrGuestsCount: 16,
+      registeredAttendeesCount: 1240,
+      callsMadeCount: 184
+    },
+    speakers: [
+      {
+        id: 'spk-1',
+        name: 'Dr. Evelyn Vasquez',
+        title: 'Chief Scientist',
+        company: 'NeuralGraph AI',
+        email: 'e.vasquez@neuralgraph.ai',
+        phone: '+1 (415) 890-2134',
+        sessionTitle: 'Real-time Autonomous Voice Orchestration at Scale',
+        timeSlot: 'Day 1 • 09:30 AM - 10:15 AM',
+        stage: 'Main Auditorium (Emerald Stage)',
+        status: 'confirmed',
+        lastAgentContact: 'Aria confirmed slides and soundcheck via Bolna call today.'
+      },
+      {
+        id: 'spk-2',
+        name: 'Marcus Sterling',
+        title: 'VP of Telephony & Speech',
+        company: 'Hypersonic Voice Labs',
+        email: 'marcus@hypersonic.tech',
+        phone: '+1 (206) 555-8912',
+        sessionTitle: 'Sub-200ms Latency in Conversational LLM Telephony',
+        timeSlot: 'Day 1 • 11:00 AM - 11:45 AM',
+        stage: 'Main Auditorium (Emerald Stage)',
+        status: 'pending_call',
+        lastAgentContact: 'Pending voice outreach call to verify keynote deck submission.'
+      },
+      {
+        id: 'spk-3',
+        name: 'Prof. Kenji Sato',
+        title: 'Director of Human-Robot Interaction',
+        company: 'Tokyo Institute of Technology',
+        email: 'sato.k@titech.ac.jp',
+        phone: '+81 3-5555-0199',
+        sessionTitle: 'Embodied Conversational Agents in Disaster Response',
+        timeSlot: 'Day 2 • 02:00 PM - 02:45 PM',
+        stage: 'Stage B (Quantum Hall)',
+        status: 'confirmed',
+        lastAgentContact: 'Flight and VIP lodge confirmed by Aria.'
+      },
+      {
+        id: 'spk-4',
+        name: 'Sarah Chen',
+        title: 'Founder & CEO',
+        company: 'VoiceMesh Inc',
+        email: 'sarah@voicemesh.io',
+        phone: '+1 (650) 412-9901',
+        sessionTitle: 'Multi-Agent State Synchronization in Live Broadcasts',
+        timeSlot: 'Day 2 • 04:00 PM - 04:45 PM',
+        stage: 'Stage B (Quantum Hall)',
+        status: 'call_scheduled',
+        lastAgentContact: 'Bolna automated confirmation call scheduled for 10:00 AM PST.'
+      }
+    ],
+    agenda: [
+      { id: 'ag-1', time: '09:00 AM', title: 'Opening Remarks & Keynote Kickoff', speaker: 'Nova Thorne (Voice MC)', stage: 'Emerald Stage', status: 'completed', durationMinutes: 30 },
+      { id: 'ag-2', time: '09:30 AM', title: 'Real-time Autonomous Voice Orchestration at Scale', speaker: 'Dr. Evelyn Vasquez', stage: 'Emerald Stage', status: 'live', durationMinutes: 45 },
+      { id: 'ag-3', time: '10:30 AM', title: 'Executive Coffee & Networking Break', speaker: 'All Attendees', stage: 'Atrium Lounge', status: 'upcoming', durationMinutes: 30 },
+      { id: 'ag-4', time: '11:00 AM', title: 'Sub-200ms Latency in Conversational LLM Telephony', speaker: 'Marcus Sterling', stage: 'Emerald Stage', status: 'upcoming', durationMinutes: 45 },
+      { id: 'ag-5', time: '01:30 PM', title: 'Multi-Agent Live Hackathon Showcase', speaker: 'Chronos Webb (Facilitator)', stage: 'Workshop Lab', status: 'upcoming', durationMinutes: 90 }
+    ],
+    tags: ['Artificial Intelligence', 'Voice AI', 'Enterprise', 'Multi-Agent']
+  },
+  {
+    id: 'proj-podcast-voicetech',
+    type: 'podcast',
+    title: 'The Synthetic Frontier: Voice & Agents',
+    description: 'Weekly in-depth podcast exploring breakthrough architectures in conversational voice agents, real-time telephony, and multi-agent coordination.',
+    date: 'Weekly Episodes (Season 3)',
+    locationOrPlatform: 'Spotify, Apple Podcasts, YouTube 4K',
+    status: 'in_progress',
+    assignedAgentIds: ['agent-talia', 'agent-kaelen', 'agent-orion', 'agent-lyra', 'agent-zephyr'],
+    metrics: {
+      progressPercent: 62,
+      tasksTotal: 28,
+      tasksCompleted: 17,
+      speakersOrGuestsCount: 8,
+      callsMadeCount: 42
+    },
+    guests: [
+      {
+        id: 'gst-1',
+        name: 'Dr. Aris Thorne',
+        role: 'Creator of UltraVoice Engine',
+        topic: 'Zero-Shot Voice Cloning & Ethical Watermarking',
+        episodeNumber: 42,
+        email: 'aris@ultravoice.org',
+        phone: '+1 (415) 991-0022',
+        status: 'briefing_ready',
+        recordingDate: 'Tomorrow at 02:00 PM EST'
+      },
+      {
+        id: 'gst-2',
+        name: 'Elena Rostova',
+        role: 'Lead Architect at OpenSpeech Labs',
+        topic: 'Building Open Source Voice Telephony Pipelines with Bolna',
+        episodeNumber: 43,
+        email: 'elena@openspeech.dev',
+        phone: '+1 (312) 555-7821',
+        status: 'booked',
+        recordingDate: 'Oct 24, 2026 at 11:00 AM EST'
+      }
+    ],
+    tags: ['Podcast', 'Audio Engineering', 'Telephony', 'Research']
+  },
+  {
+    id: 'proj-decentral-2026',
+    type: 'event',
+    title: 'Decentralized Autonomous Systems Forum',
+    description: 'Specialized 1-day symposium on decentralized coordination, cryptographic identity for agents, and governance.',
+    date: 'Dec 05, 2026',
+    locationOrPlatform: 'Austin Convention Center, TX',
+    status: 'planning',
+    assignedAgentIds: ['agent-aria', 'agent-vance'],
+    metrics: {
+      progressPercent: 30,
+      tasksTotal: 18,
+      tasksCompleted: 5,
+      speakersOrGuestsCount: 6,
+      registeredAttendeesCount: 310,
+      callsMadeCount: 16
+    },
+    tags: ['Decentralized', 'Cryptography', 'Governance']
+  }
+];
+
+export const INITIAL_TASKS: Task[] = [
+  {
+    id: 'task-tb-101',
+    projectId: 'proj-bharat-2026',
+    projectTitle: 'Think for Bharat 1.0',
+    title: 'Stage Host PA Announcement: Hackathon Kickoff & Problem Statements Cue',
+    description: 'Broadcast Hindi & English emcee cue for the 24-hour hackathon launch to Kalam Auditorium & Aryabhata Bay speakers.',
+    assignedAgentId: 'agent-nova',
+    status: 'awaiting_approval',
+    priority: 'critical',
+    createdAt: '5 mins ago',
+    requiresApproval: true,
+    approvalStatus: 'pending',
+    actionPayload: {
+      actionType: 'voice_call',
+      recipient: 'Main Stage PA System & Audio Stream',
+      phone: '+91 (PA) Main Auditorium',
+      bolnaAgentId: 'bde59659-8472-4bf9-ae84-819e9326ed41',
+      messageContent: `नमस्ते और स्वागत है! Think for Bharat 1.0 का 24-घंटे का हैकाथॉन अब आधिकारिक रूप से शुरू हो चुका है। सभी 300 टीमों को ऑल द बेस्ट! अपने प्रॉब्लेम स्टेटमेंट्स और मेंटर्स गाइड के लिए अपने पर्सनल एआई कंपेनियन का उपयोग करें।`,
+      proposedChanges: {
+        channel: 'Stage PA & In-Ear Monitor Broadcast',
+        engine: 'Sarvam AI (Bulbul v4 Flash)',
+        language: 'hi-IN / en-IN',
+      },
+    },
+    executionLog: [
+      { timestamp: '10:50 AM', message: 'In-Ear Monitor & Mic I/O hardware loop verified.', level: 'info' },
+      { timestamp: '10:52 AM', message: 'Nova Thorne synthesized Hindi & English announcement via Sarvam AI.', level: 'action' },
+      { timestamp: '10:53 AM', message: 'Stage PA gate requires operator confirmation before audio broadcast.', level: 'warning' },
+    ],
+  },
+  {
+    id: 'task-tb-102',
+    projectId: 'proj-bharat-2026',
+    projectTitle: 'Think for Bharat 1.0',
+    title: 'Personal AI Concierge Hotline: Send Wi-Fi & Schedule Sync to 2,480 Attendees',
+    description: 'Atlas Reid ready to dispatch instant SMS/Voice verification with personalized AI concierge link and Wi-Fi credentials.',
+    assignedAgentId: 'agent-atlas',
+    status: 'in_progress',
+    priority: 'high',
+    createdAt: '12 mins ago',
+    requiresApproval: false,
+    actionPayload: {
+      actionType: 'email_outreach',
+      recipient: 'All Checked-In Attendees (Aryabhata Bay & Online)',
+      subject: 'Welcome to Think for Bharat 1.0 — Your Personal AI Concierge is Ready',
+      messageContent: 'Your personal AI is ready at your fingertips! Ask any question about Wi-Fi, Food, Mentors, and Code Freeze in Hindi, Tamil, or English.',
+    },
+    executionLog: [
+      { timestamp: '09:15 AM', message: '2,480 attendee records synchronized with personal AI knowledge base.', level: 'info' },
+      { timestamp: '09:20 AM', message: 'Interactive voice hotline primed on Bolna number +91 80 4719 3300.', level: 'action' },
+      { timestamp: '09:35 AM', message: 'Dispatching dynamic links to attendee dashboard.', level: 'action' },
+    ],
+  },
+  {
+    id: 'task-101',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    title: 'Outbound Voice Confirmation Call to Marcus Sterling',
+    description: 'Call keynote speaker Marcus Sterling to verify slide deck formatting and confirm arrival time for 11:00 AM keynote.',
+    assignedAgentId: 'agent-aria',
+    status: 'awaiting_approval',
+    priority: 'high',
+    createdAt: '15 mins ago',
+    requiresApproval: true,
+    approvalStatus: 'pending',
+    actionPayload: {
+      actionType: 'voice_call',
+      recipient: 'Marcus Sterling (VP Hypersonic Voice Labs)',
+      phone: '+1 (206) 555-8912',
+      bolnaAgentId: 'bde59659-8472-4bf9-ae84-819e9326ed41',
+      messageContent: `Hello Marcus, this is Aria from EchoFrame calling on behalf of Global AI Summit. I'm verifying your slide deck aspect ratio and confirming you are set for the 11:00 AM keynote on Emerald Stage. Do you need any A/V adapter setups?`,
+      proposedChanges: {
+        channel: 'Bolna Voice Outbound Telephony',
+        maxDurationSeconds: 180,
+        recordingEnabled: true
+      }
+    },
+    executionLog: [
+      { timestamp: '10:42 AM', message: 'Target phone number validated via E.164 syntax.', level: 'info' },
+      { timestamp: '10:43 AM', message: 'Bolna voice agent agent-aria primed with speaker context.', level: 'action' },
+      { timestamp: '10:44 AM', message: 'Outbound voice call staged. Human authorization required per governance policy.', level: 'warning' }
+    ]
+  },
+  {
+    id: 'task-102',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    title: 'Shift Stage B Schedule by 15 mins due to keynote Q&A overrun',
+    description: 'Dr. Vasquez session received 40 audience questions. Chronos proposing 15-minute buffer adjustment.',
+    assignedAgentId: 'agent-chronos',
+    status: 'awaiting_approval',
+    priority: 'critical',
+    createdAt: '8 mins ago',
+    requiresApproval: true,
+    approvalStatus: 'pending',
+    actionPayload: {
+      actionType: 'calendar_shift',
+      recipient: 'All Stage B Speakers & Attendee Push Alert',
+      proposedChanges: {
+        originalStart: '10:15 AM',
+        newStart: '10:30 AM',
+        impactedSessions: 3,
+        autoNotifyAttendees: true
+      },
+      messageContent: 'Stage B sessions will commence at 10:30 AM to accommodate keynote Q&A extension. Mobile app and digital signage will update upon approval.'
+    },
+    executionLog: [
+      { timestamp: '10:48 AM', message: 'Chronos detected 12-minute stage overrun on Emerald Stage.', level: 'warning' },
+      { timestamp: '10:49 AM', message: 'Calculated optimal ripple buffer across 3 subsequent talks.', level: 'action' },
+      { timestamp: '10:50 AM', message: 'Awaiting human event director sign-off before dispatching alerts.', level: 'warning' }
+    ]
+  },
+  {
+    id: 'task-103',
+    projectId: 'proj-podcast-voicetech',
+    projectTitle: 'The Synthetic Frontier Podcast',
+    title: 'Generate Briefing Dossier & 10 Contrarian Questions for Dr. Aris Thorne',
+    assignedAgentId: 'agent-kaelen',
+    status: 'in_progress',
+    priority: 'high',
+    createdAt: '35 mins ago',
+    requiresApproval: false,
+    description: 'Synthesize Dr. Thorne latest preprint on zero-shot latent acoustic diffusion and formulate 10 non-obvious questions.',
+    executionLog: [
+      { timestamp: '10:15 AM', message: 'Fetched 3 arXiv papers authored by Dr. Aris Thorne.', level: 'info' },
+      { timestamp: '10:22 AM', message: 'Extracted prior interview transcripts from 2025 appearances.', level: 'action' },
+      { timestamp: '10:35 AM', message: 'Synthesizing question angles on copyright watermarking.', level: 'action' }
+    ]
+  },
+  {
+    id: 'task-104',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    title: 'Deploy Real-Time Attendee Voice Concierge on Venue Hotline',
+    assignedAgentId: 'agent-atlas',
+    status: 'in_progress',
+    priority: 'medium',
+    createdAt: '1 hour ago',
+    requiresApproval: false,
+    description: 'Atlas monitoring active inbound voice calls regarding parking, badge pickup, and lunch vouchers.',
+    executionLog: [
+      { timestamp: '09:45 AM', message: 'Atlas connected to Bolna SIP trunk +1 (800) 555-ECHO.', level: 'info' },
+      { timestamp: '10:00 AM', message: 'Answered 28 inbound attendee queries with 100% resolution.', level: 'success' },
+      { timestamp: '10:30 AM', message: 'Current concurrency: 4 active calls in progress.', level: 'action' }
+    ]
+  },
+  {
+    id: 'task-105',
+    projectId: 'proj-podcast-voicetech',
+    projectTitle: 'The Synthetic Frontier Podcast',
+    title: 'Master Audio Stem for Episode 41 & Export LUFS Compliance',
+    assignedAgentId: 'agent-lyra',
+    status: 'completed',
+    priority: 'medium',
+    createdAt: '3 hours ago',
+    completedAt: '1 hour ago',
+    requiresApproval: false,
+    description: 'Lyra balanced guest voice stem at -16 LUFS, stripped mouth clicks, and inserted intro/outro music beds.',
+    executionLog: [
+      { timestamp: '07:30 AM', message: 'Imported raw WAV stems (Host & Guest).', level: 'info' },
+      { timestamp: '08:10 AM', message: 'Automated de-reverb and noise floor gating complete.', level: 'action' },
+      { timestamp: '08:45 AM', message: 'Exported master MP3 (320kbps, -16.1 LUFS). Ready for syndication.', level: 'success' }
+    ]
+  },
+  {
+    id: 'task-106',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    title: 'Disburse VIP Dinner Calendar Invites with Dietary Collection',
+    assignedAgentId: 'agent-aria',
+    status: 'completed',
+    priority: 'low',
+    createdAt: 'Yesterday',
+    completedAt: 'Yesterday 04:00 PM',
+    requiresApproval: false,
+    description: 'Sent 24 VIP speaker dinner invitations with integrated dietary restriction form.',
+    executionLog: [
+      { timestamp: '03:15 PM', message: 'Synced speaker guest list with Moscone VIP private dining.', level: 'info' },
+      { timestamp: '04:00 PM', message: 'All 24 invites confirmed with dietary data logged.', level: 'success' }
+    ]
+  }
+];
+
+export const INITIAL_ACTIVITY_LOGS: ActivityLogItem[] = [
+  {
+    id: 'act-1',
+    timestamp: '2 mins ago',
+    agentId: 'agent-chronos',
+    agentName: 'Chronos Webb',
+    agentRole: 'scheduling_agenda',
+    domain: 'event',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    type: 'approval_requested',
+    message: 'Submitted schedule buffer adjustment for Stage B (+15 mins).',
+    details: 'Needs human approval to alert 3 speakers and 1,200 attendees.'
+  },
+  {
+    id: 'act-2',
+    timestamp: '6 mins ago',
+    agentId: 'agent-aria',
+    agentName: 'Aria Vance',
+    agentRole: 'speaker_coordination',
+    domain: 'event',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    type: 'approval_requested',
+    message: 'Queued automated Bolna voice call to Marcus Sterling for keynote deck verification.',
+    details: 'Recipient phone: +1 (206) 555-8912'
+  },
+  {
+    id: 'act-3',
+    timestamp: '14 mins ago',
+    agentId: 'agent-atlas',
+    agentName: 'Atlas Reid',
+    agentRole: 'attendee_support',
+    domain: 'event',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    type: 'call_completed',
+    message: 'Resolved voice inquiry from attendee regarding wheelchair ramp access at West Hall.',
+    details: 'Call duration: 44s • Sentiment: Positive'
+  },
+  {
+    id: 'act-4',
+    timestamp: '25 mins ago',
+    agentId: 'agent-kaelen',
+    agentName: 'Kaelen Voss',
+    agentRole: 'research_briefing',
+    domain: 'podcast',
+    projectId: 'proj-podcast-voicetech',
+    projectTitle: 'The Synthetic Frontier',
+    type: 'task_created',
+    message: 'Initiated deep web dossier synthesis for guest Dr. Aris Thorne (Episode 42).',
+    details: 'Parsing 3 recent arXiv preprints and past talks.'
+  },
+  {
+    id: 'act-5',
+    timestamp: '1 hour ago',
+    agentId: 'agent-lyra',
+    agentName: 'Lyra Mercer',
+    agentRole: 'episode_production',
+    domain: 'podcast',
+    projectId: 'proj-podcast-voicetech',
+    projectTitle: 'The Synthetic Frontier',
+    type: 'task_created',
+    message: 'Finalized audio mastering for Episode 41: "Sub-second Conversational Loops".',
+    details: 'Master file: episode41_master_16lufs.mp3'
+  },
+  {
+    id: 'act-6',
+    timestamp: '2 hours ago',
+    agentId: 'agent-aria',
+    agentName: 'Aria Vance',
+    agentRole: 'speaker_coordination',
+    domain: 'event',
+    projectId: 'proj-summit-2026',
+    projectTitle: 'Global AI Summit 2026',
+    type: 'call_completed',
+    message: 'Completed voice check-in call with Dr. Evelyn Vasquez. Keynote slides verified in 16:9 4K.',
+    details: 'Bolna execution id: exec_983192 • Call duration: 2m 14s'
+  }
+];
