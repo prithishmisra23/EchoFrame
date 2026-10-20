@@ -233,39 +233,69 @@ export function AttendeePersonalAiExperience() {
     setIsSpeaking(false);
   };
 
-  // Answer generator tailored to Think for Bharat 1.0
+  // FAQ-driven AI answer: searches project faqs + venue data, then keyword patterns
   const generateAiAnswer = (query: string): string => {
     const q = query.toLowerCase();
+    const faqs = bharatProject?.faqs || [];
+    const venue = bharatProject?.venueDetails;
+    const agenda = bharatProject?.agenda || [];
 
-    if (q.includes('wifi') || q.includes('wi-fi') || q.includes('internet') || q.includes('password')) {
-      return `📶 You can connect to the high-speed 1Gbps event network:\n\n• Network SSID: ThinkForBharat_5G\n• Password: Bharat@2026\n\nIf you are working from Aryabhata Bay pods, high-speed Gigabit LAN ethernet ports are also available at every 4th table.`;
+    // 1. Search project FAQs dynamically
+    for (const faq of faqs) {
+      const keywords = faq.question.toLowerCase().split(/[\s,?]+/).filter((w) => w.length > 3);
+      if (keywords.some((kw) => q.includes(kw))) {
+        return `💡 **${faq.question}**\n\n${faq.answer}`;
+      }
     }
 
-    if (q.includes('food') || q.includes('lunch') || q.includes('tea') || q.includes('chai') || q.includes('snack') || q.includes('dinner')) {
-      return `🍛 Dining & Refreshment Timings at Think for Bharat 1.0:\n\n• Hot Buffet Lunch: 01:00 PM - 02:30 PM at Dining Lawn (West Courtyard)\n• Evening High Tea & Samosas: 05:00 PM at Foyer & Lawn\n• Midnight Biryani & Energy Drinks: 12:00 AM at Aryabhata Bay\n• 24/7 Masala Chai & Filter Coffee: Available continuous at Aryabhata Bay Beverage Stations.`;
+    // 2. Venue-aware answers
+    if (venue && (q.includes('wifi') || q.includes('wi-fi') || q.includes('internet') || q.includes('password') || q.includes('network'))) {
+      return `📶 **Wi-Fi Credentials**\n\n• Network: **${venue.wifiSsid}**\n• Password: **${venue.wifiPassword || 'Not configured'}**\n\nFor wired connections, Gigabit LAN ports are at every 4th table in Aryabhata Bay.`;
     }
 
-    if (q.includes('freeze') || q.includes('deadline') || q.includes('pitch') || q.includes('schedule') || q.includes('time') || q.includes('timeline')) {
-      return `⏱️ Key Hackathon Milestones:\n\n• 24-Hour Hack Clock: Started at 11:30 AM (Day 1)\n• T-Minus 1 Hour Submission Warning: 11:00 AM (Day 2)\n• Strictly Hard Code Freeze: 12:00 PM (Day 2) sharp! Repositories will be locked.\n• Grand Jury Finalist Pitches: 01:30 PM - 03:30 PM in Kalam Grand Auditorium\n• ₹25 Lakh Awards Ceremony: 04:30 PM in Kalam Grand Auditorium.`;
+    if (venue && (q.includes('where') || q.includes('hall') || q.includes('stage') || q.includes('washroom') || q.includes('toilet') || q.includes('map') || q.includes('venue'))) {
+      const zones = venue.zones || [];
+      if (zones.length > 0) {
+        const zoneList = zones.map((z) => `• **${z.name}**: ${z.description}`).join('\n');
+        return `📍 **Venue Layout — ${venue.venueName}**\n\n${zoneList}\n\nFor emergencies: ${venue.emergencyContact || 'See event staff at the registration desk.'}`;
+      }
     }
 
-    if (q.includes('mentor') || q.includes('help') || q.includes('advice') || q.includes('review') || q.includes('stuck')) {
-      return `👨‍🏫 Mentorship at Think for Bharat 1.0:\n\nMentors for your track (${selectedAttendee.track || 'Voice & AI'}) are roaming Aryabhata Bay:\n\n• Track Mentors: Priya Patel (Fintech DPI), Karthik Narayanan (Voice AI / Sarvam), Dr. Ramanathan (Architecture).\n• To call a mentor to table: I have flagged your pod (${selectedAttendee.teamName || 'Your Team'}). A mentor will arrive at your table within 10 minutes, or you can visit the Mentor Helpdesk at Hall 4 Entrance.`;
+    // 3. Agenda/schedule lookup
+    if (q.includes('schedule') || q.includes('agenda') || q.includes('session') || q.includes('talk') || q.includes('next') || q.includes('upcoming')) {
+      const liveSession = agenda.find((a) => a.status === 'live');
+      const upcoming = agenda.filter((a) => a.status === 'upcoming').slice(0, 3);
+      let resp = '🗓️ **Live Run-of-Show**\n\n';
+      if (liveSession) resp += `🔴 **NOW LIVE** (${liveSession.time}): ${liveSession.title} — ${liveSession.speaker} at ${liveSession.stage}\n\n`;
+      if (upcoming.length > 0) resp += '**Coming up:**\n' + upcoming.map((a) => `• ${a.time} — ${a.title} (${a.stage})`).join('\n');
+      return resp || 'The full schedule is available at the registration kiosk and in Kalam Grand Auditorium.';
     }
 
-    if (q.includes('rule') || q.includes('github') || q.includes('submission') || q.includes('criteria') || q.includes('prize')) {
-      return `📜 Hackathon Submission Guidelines:\n\n• Team Size: 2 to 4 members.\n• Open Source: Pre-trained foundation models (Sarvam, Bhashini, Llama) are allowed. Core application code, data transformations, and prompts must be written during the event.\n• Deliverables: Public GitHub repository with README, architecture diagram, and a 3-minute video demo URL.\n• Grand Prize: ₹25 Lakh total prize pool with incubation grants from MeitY & Indic Ventures.`;
+    // 4. Keyword-based fallbacks
+
+    const q2 = query.toLowerCase();
+
+    if (q2.includes('food') || q2.includes('lunch') || q2.includes('tea') || q2.includes('chai') || q2.includes('snack') || q2.includes('dinner')) {
+      return `🍛 **Dining & Refreshment Timings**\n\n• Hot Buffet Lunch: 01:00 PM – 02:30 PM at Dining Lawn (West Courtyard)\n• Evening High Tea & Samosas: 05:00 PM at Foyer & Lawn\n• Midnight Biryani & Energy Drinks: 12:00 AM at Aryabhata Bay\n• 24/7 Masala Chai & Filter Coffee: Beverage stations in Aryabhata Bay.`;
     }
 
-    if (q.includes('kalam') || q.includes('where') || q.includes('venue') || q.includes('washroom') || q.includes('toilet') || q.includes('stage') || q.includes('hall')) {
-      return `📍 Venue Navigation Map (Bharat Mandapam):\n\n• Kalam Grand Auditorium (Stage 1): Ground Floor East Wing (Keynotes & Final Demos)\n• Ramanujan Tech Arena (Stage 2): Level 1 North (Technical workshops & fireside chats)\n• Aryabhata Hackers Bay: Hall 4 (300 hacker pods & mentor lounge)\n• Dining Lawn: West Courtyard via Exit Gate 3\n• Restrooms: Located next to Bay 1 & Bay 20 in Hall 4.`;
+    if (q2.includes('mentor') || q2.includes('help') || q2.includes('advice') || q2.includes('stuck')) {
+      return `👨‍🏫 **Mentorship at ${bharatProject?.title || 'Think for Bharat'}**\n\nMentors for your track (${selectedAttendee.track || 'Voice AI'}) are roaming Aryabhata Bay.\n\n• Track Mentors: Priya Patel (Fintech DPI), Karthik Narayanan (Voice AI / Sarvam)\n• To request a mentor: I've flagged your pod for **${selectedAttendee.teamName || 'your team'}**. A mentor will arrive within 10 minutes, or visit the Mentor Helpdesk at Hall 4 Entrance.`;
     }
 
-    if (q.includes('track') || q.includes('problem') || q.includes('indic') || q.includes('bharat') || q.includes('sarvam')) {
-      return `🇮🇳 Think for Bharat 1.0 Focus Tracks:\n\n1. Multilingual Voice AI & Indic LLMs (Voice-first interfaces in 22 languages)\n2. Agritech & Rural Empowerment (Advisory & pest detection for farmers)\n3. Healthcare AI for Tier 2/3 Clinics (Acoustic diagnostics & EHR summarization)\n4. Fintech & Digital Public Infrastructure (Voice-first UPI 123Pay & conversational banking)\n\nFor ${selectedAttendee.name} (${selectedAttendee.teamName || 'Innovator'}), your registered track is: "${selectedAttendee.track}". Let me know if you need specific dataset endpoints!`;
+    if (q2.includes('rule') || q2.includes('github') || q2.includes('submission') || q2.includes('criteria') || q2.includes('prize')) {
+      return `📜 **Hackathon Submission Guidelines**\n\n• Team size: 2–4 members\n• Pre-trained models (Sarvam, Bhashini, Llama) are allowed; application code must be written during the event\n• Submit: Public GitHub repo + README + 3-minute video demo\n• Prize Pool: ₹25 Lakh with incubation grants from MeitY & Indic Ventures.`;
     }
 
-    return `Thank you for asking, ${selectedAttendee.name}! At Think for Bharat 1.0, everything is configured for your team. You can check the main run-of-show in Kalam Grand Auditorium, consult mentors in Aryabhata Bay, or connect to "ThinkForBharat_5G" (Password: Bharat@2026). Let me know if you need mentor assistance, food directions, or API keys!`;
+    if (q2.includes('freeze') || q2.includes('deadline') || q2.includes('pitch')) {
+      return `⏱️ **Key Hackathon Milestones**\n\n• Hack Clock Started: 11:30 AM (Day 1)\n• T-Minus 1 Hour Warning: 11:00 AM (Day 2)\n• Hard Code Freeze: **12:00 PM (Day 2)** — repos locked\n• Grand Jury Pitches: 01:30 PM – 03:30 PM, Kalam Grand Auditorium\n• ₹25 Lakh Awards Ceremony: 04:30 PM, Kalam Grand Auditorium.`;
+    }
+
+    if (q2.includes('track') || q2.includes('problem') || q2.includes('indic') || q2.includes('sarvam')) {
+      return `🇮🇳 **Think for Bharat 1.0 Focus Tracks**\n\n1. Multilingual Voice AI & Indic LLMs\n2. Agritech & Rural Empowerment\n3. Healthcare AI for Tier 2/3 Clinics\n4. Fintech & Digital Public Infrastructure\n\nYou (${selectedAttendee.name}) are registered on: **"${selectedAttendee.track}"**. Need dataset endpoints or API keys for your track?`;
+    }
+
+    return `Namaste ${selectedAttendee.name}! I'm your 24/7 AI companion for ${bharatProject?.title || 'Think for Bharat 1.0'}.\n\nQuick help: ask me about Wi-Fi, food timings, mentor requests, the hackathon schedule, submission rules, or venue navigation. I can also speak answers in Hindi, Tamil, or English! 🎙️`;
   };
 
   const handleSendMessage = async (textToSend?: string) => {
