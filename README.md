@@ -1,112 +1,193 @@
 # 🎙️ EchoFrame — Multi-Agent Voice AI Orchestration Platform
 
-> **Coordinated Team of Specialized AI Agents for Live Events & Podcast Productions**  
-> Powered by Next.js 16, TypeScript, Tailwind CSS, Supabase, and Bolna Conversational Voice AI Telephony.
+> **A coordinated team of specialized AI agents for live events & podcast productions**  
+> Live demo: **[echoframee.vercel.app](https://echoframee.vercel.app)**  
+> Stack: Next.js · TypeScript · Supabase · Bolna Voice AI · Sarvam AI (Bulbul v4 Flash)
 
 ---
 
 ## 🌟 Overview
 
-Instead of relying on a generic, single chatbot, **EchoFrame** deploys an entire coordinated team of specialized AI agents. Each agent is purpose-built with tailored domain instructions, voice personas, RAG knowledge bases, and permission-gated tools.
+Instead of relying on a single generic chatbot, **EchoFrame** deploys a coordinated squad of specialized AI agents. Each agent is purpose-built with tailored system prompts, voice personas, RAG knowledge bases, and permission-gated tools — orchestrated from a single command center.
 
-- **For Events**: Coordinate keynotes, attendee support, registration quotas, master run-of-show timing, live stage hosting, and post-event NPS surveys.
-- **For Podcasts**: Manage guest talent outreach, investigative research dossiers, in-ear live co-hosting, stem audio mastering, and viral social distribution.
+**Flagship demo**: *Think for Bharat 1.0* — a national 24-hour AI hackathon at Bharat Mandapam, New Delhi with 2,400+ hackers, mentors, and judges. EchoFrame manages stage PA announcements, attendee personal AI concierges, speaker coordination, and live ops — all in Hindi, English, and Tamil.
 
 ---
 
-## ⚡ Key Highlights & Core Features
+## ⚡ Feature Map
 
-### 1. 📊 Central Operations Dashboard
-- High-level KPIs: Active Events, Podcast Shows, Deployed Agents, Outbound Voice Calls, and Pending Human Approvals.
-- **Active Operations Grid**: Live progress bars, run-of-show timeline links, speaker/guest counters, and 1-click batch voice campaign triggers.
-- **Real-Time Multi-Agent Telemetry Stream**: Live activity feed tracking agent tool executions, Bolna telephony sessions, and supervisor authorization logs.
+### 1. 🤖 Event Operator (Conversational AI Planner)
+- Chat with the AI planner in natural language to design your event: just describe it in English, Hindi, or Tamil
+- Five quick-start briefs for common event types (National Hackathon, Global Summit, Podcast, etc.)
+- The AI extracts structured data (date, venue, speakers, tracks, budget) and proposes an agent team and task plan
+- One-click to launch the full multi-agent team with tasks pre-loaded in the Operations board
 
-### 2. 🤖 Agent Studio (11 Specialized Roles)
-Configure each agent's identity, system prompt, voice model, tools, and autonomy permissions:
+### 2. 🎭 AI Stage Host — Live PA & Announcements
+- **Real microphone integration** via Web Audio API with VU meter and device enumeration
+- **In-Ear Monitor (IEM) rehearsal**: hear the script in your earphone before going live
+- **Sarvam AI Bulbul v4 Flash** multilingual TTS in Hindi (hi-IN), Indian English (en-IN), and Tamil (ta-IN)
+- 8 pre-built Think for Bharat announcement presets (Grand Inauguration, Hackathon Kickoff, Code Freeze Alert, Awards Ceremony, etc.)
+- **Stage Broadcast Telemetry**: live log of every PA broadcast with timestamps
+- Master Run-of-Show timeline with 11 agenda items — navigate sessions with Prev/Next
+- Speaker introduction script auto-generator (pulls from project's speaker list)
+- Language-aware voice selector (Simran, Shubh, Aditya, Anand for Hindi; Gokul, Vijay for Tamil)
 
-#### 🎪 Event Management Agents:
-1. **Aria Vance** — *Speaker Coordination Agent*: Outreach phone calls, technical riders, presentation slide aspect ratios, green room VIP logistics.
-2. **Atlas Reid** — *Attendee Support & Concierge*: 24/7 venue hotline, floor navigation, Wi-Fi access, badge pickup kiosks.
-3. **Vance Sterling** — *Registrations & Capacity Agent*: Ticket tier quotas, corporate group discounts, and waitlist allocations.
-4. **Chronos Webb** — *Scheduling & Agenda Director*: Run-of-show timing drift, stage buffer calculations, A/V control booth cues.
-5. **Nova Thorne** — *Stage Hosting & Voice MC*: Main auditorium PA announcements, speaker introductions, teleprompter feeding.
-6. **Echo Rivera** — *Post-Event Feedback & NPS Agent*: Automated 90-second voice check-in surveys, sentiment synthesis.
+### 3. 🧑‍💻 Personal AI Concierge for Attendees
+- Per-attendee intelligent chatbot powered by event knowledge (venue, schedule, Wi-Fi, rules, food)
+- **Bharat Mitra AI** — welcomes attendees by name in their preferred language
+- Voice answers (Sarvam TTS) with "Play Voice" button on each message
+- Quick-inquiry chips: Wi-Fi Credentials, Code Freeze & Schedule, Mentor Request, Hackathon Rules, Venue Map
+- **Attendee Directory & Roster** — full table of all 8+ registered attendees with check-in status, badge codes, roles, and tracks
+- Add new attendees on the fly with the inline roster form
+- One-click "Call Attendee" via Bolna outbound telephony
 
-#### 🎙️ Podcast Production Agents:
-7. **Talia Brooks** — *Guest Coordination Agent*: Talent invitations, studio booking, and remote microphone/acoustic soundcheck calls.
-8. **Kaelen Voss** — *Research & Briefing Agent*: Deep web guest dossiers, arXiv paper parsing, and 10 contrarian interview questions.
-9. **Orion Black** — *Voice Interview Co-Host*: Real-time in-ear whisper prompter, on-the-fly fact checking, sponsor ad roll transitions.
-10. **Lyra Mercer** — *Episode Audio & Notes Producer*: Multi-track stems mastering (-16 LUFS), chapter markers, and Markdown show notes.
-11. **Zephyr Cole** — *Content & Distribution Strategist*: Viral 30-second soundbite clips, X/Twitter threads, and LinkedIn carousel copy.
+### 4. 📊 Central Operations Dashboard
+- KPI cards: Active Events, Podcast Shows, Deployed Agents, Outbound Calls, Pending Approvals
+- Projects overview with live progress bars, speaker/guest counters, and voice campaign launchers
+- Real-time activity feed with agent action telemetry
 
-- **Interactive Voice Preview**: Test any agent's conversational voice in real-time with browser Web Speech Synthesis and audio waveform animation.
+### 5. 🤖 Agent Studio (11 Specialized Roles)
 
-### 3. ⚡ Natural Voice Command Center
-- **Natural Language Orchestrator**: Speak or type complex multi-step goals (e.g. *"Call unconfirmed speakers for tomorrow's keynote"* or *"Prepare episode 42 of The Synthetic Frontier with Dr. Aris Thorne"*).
-- **Reactive Audio Visualizer**: Real-time canvas sine-wave harmonic visualizer reacting to speech.
-- **Structured Multi-Agent Workflow Generator**: Decomposes user requests into sequential/parallel agent tasks, assigning responsibilities and flagging required human approvals.
-- **Voice Response Feedback**: EchoFrame speaks synthesized audio responses back to the operator.
+#### 🎪 Event Agents:
+1. **Nova Thorne** — Stage Hosting & Voice MC (PA announcements, teleprompter)
+2. **Aria Vance** — Speaker Coordination (outreach calls, riders, green room)
+3. **Atlas Reid** — Attendee Support & Concierge (24/7 venue hotline)
+4. **Vance Sterling** — Registrations & Capacity (ticket quotas, waitlists)
+5. **Chronos Webb** — Scheduling & Agenda Director (run-of-show timing)
+6. **Echo Rivera** — Post-Event Feedback & NPS (voice survey calls)
 
-### 4. 🛰️ Live Operations Center & Human-in-the-Loop
-- **5-Column Kanban Board**: `Backlog` ➔ `In Progress (Agent Working)` ➔ `Awaiting Human Approval` ➔ `Completed` ➔ `Failed / Rejected`.
-- **Human-in-the-Loop Approval Modal**: Review sensitive actions (outbound phone calls, schedule changes) before dialing. Operators can inspect and edit the Bolna speech script and target phone number.
-- **Execution Telemetry & Call Player**: Review full conversational transcripts (Agent vs. User), audio playback simulation, call duration, and sentiment analysis.
+#### 🎙️ Podcast Agents:
+7. **Talia Brooks** — Guest Coordination (talent invitations, studio booking)
+8. **Kaelen Voss** — Research & Briefing (dossiers, contrarian questions)
+9. **Orion Black** — Voice Interview Co-Host (in-ear whisper, fact-check)
+10. **Lyra Mercer** — Episode Audio Producer (mastering, show notes)
+11. **Zephyr Cole** — Content Distribution (viral clips, social threads)
 
-### 5. 📞 Bolna Voice AI & Telephony Integration
-- **Direct Bolna API Connectivity**: Supports live outbound calling via `https://api.bolna.ai/call` and agent synchronization.
-- **High-Fidelity Sandbox Simulator**: When no API key is provided, the platform automatically switches to a full-duplex sandbox simulation mode with realistic transcripts, call durations, and audio telemetry.
-- **Batch Voice Campaigns**: Launch automated confirmation phone calls to all unconfirmed keynotes or podcast guests with 1 click.
+### 6. ⚡ Voice Command Center
+- Natural language orchestration: speak or type complex multi-step goals
+- Real-time canvas sine-wave audio visualizer
+- Structured workflow generator: decomposes goals into sequential/parallel agent tasks
 
-### 6. 🗄️ Supabase Relational Database
-- Complete PostgreSQL schema with Row-Level Security (RLS) policies for `projects`, `agents`, `tasks`, and `activity_logs`.
-- 1-click **Export SQL Schema** button in the Integrations modal to provision your Supabase instance instantly.
+### 7. 🛰️ Live Operations & Human-in-the-Loop
+- 5-column Kanban: Queued → In Progress → **Awaiting Human Approval** → Completed → Failed
+- Approval modal: review, edit Bolna script and phone number before authorizing a call
+- Execution telemetry: full transcript, call duration, sentiment analysis
+
+### 8. 📞 Bolna Voice AI Telephony
+- Direct Bolna API (`POST /api/bolna/call`) with E.164 phone validation
+- Full-duplex sandbox simulation when no API key is set
+- Batch voice campaign launcher for all unconfirmed speakers/guests
+
+### 9. 🗄️ Supabase Backend
+- PostgreSQL schema with RLS policies for `projects`, `agents`, `tasks`, `activity_logs`
+- One-click SQL schema export from the Integrations modal
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Next.js 16 (App Router, Turbopack)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS (Modern dark palette: charcoal `#08080a`, `#0f1016`, emerald `#10b981`, `#059669`)
-- **Icons**: Lucide React
-- **Voice Infrastructure**: Bolna Cloud API & Web Speech API (Recognition + Synthesis)
-- **Audio Visuals**: Canvas Web Audio Analyser
-- **Database**: Supabase PostgreSQL + LocalStorage reactive fallback
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js (App Router) |
+| Language | TypeScript |
+| Styling | CSS variables, dark mode, glassmorphism |
+| Icons | Lucide React |
+| Voice TTS | Sarvam AI Bulbul v4 Flash (hi-IN, en-IN, ta-IN) |
+| Voice Telephony | Bolna Cloud API |
+| Browser Voice | Web Speech API (Recognition + Synthesis) |
+| Audio I/O | Web Audio API (VU meter, device enumeration, IEM) |
+| Audio Visualizer | Canvas Web Audio Analyser |
+| Database | Supabase PostgreSQL + localStorage fallback |
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Install Dependencies
+### 1. Clone & Install
 ```bash
+git clone https://github.com/prithishmisra23/EchoFrame.git
+cd EchoFrame
 npm install
 ```
 
-### 2. Run Local Development Server
+### 2. Configure Environment Variables
+Create a `.env.local` file:
+```env
+# Sarvam AI (multilingual TTS — Hindi, English, Tamil)
+SARVAM_API_KEY=sk_your_key_here
+
+# Bolna Voice AI (outbound telephony)
+BOLNA_API_KEY=bn-your_key_here
+BOLNA_BASE_URL=https://api.bolna.ai
+BOLNA_DEFAULT_AGENT_ID=your_agent_id_here
+
+# Set to false for live calls
+ECHOFRAME_SANDBOX_MODE=true
+```
+
+> **No API keys?** The app runs fully in **sandbox/demo mode** — Bolna calls are simulated with realistic transcripts, and browser Web Speech replaces Sarvam TTS.
+
+### 3. Run Locally
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000)
 
-### 3. Build for Production
+### 4. Deploy to Vercel
 ```bash
-npm run build
-npm run start
+vercel --prod
 ```
+Add all env vars to your Vercel project's environment settings.
 
 ---
 
-## ⚙️ Configuration (Optional)
+## ⚙️ Integrations Configuration
 
-Configure your credentials via the **Integrations & Settings** gear icon in the top header:
-- **Bolna API Key**: `bn_live_...` (or leave empty for Sandbox mode)
-- **Supabase URL**: `https://<your-project>.supabase.co`
-- **Supabase Anon Key**: `eyJhbGci...`
+Click the **⚙️ gear icon** → Integrations in the header to configure:
+- **Bolna API Key**: `bn_live_...` (or leave empty for Sandbox simulation)
+- **Supabase URL & Anon Key**: for cloud persistence
+- Click **Export SQL Schema** to get the DDL for your Supabase project
 
-To set up Supabase tables, click **Export SQL Schema** in the Integrations modal and run it in the Supabase SQL Editor.
+---
+
+## 🎯 Demo: Think for Bharat 1.0
+
+The live demo is pre-loaded with **Think for Bharat 1.0** — India's premier AI hackathon:
+
+| Detail | Value |
+|--------|-------|
+| Venue | Bharat Mandapam, Pragati Maidan, New Delhi |
+| Dates | March 15–16, 2026 |
+| Attendees | 2,480 registered |
+| Wi-Fi | ThinkForBharat_5G / Bharat@2026 |
+| Prize Pool | ₹25 Lakh |
+| Tracks | Indic Voice AI, Agritech, Healthcare AI, Fintech DPI |
+
+Try these demo flows:
+1. **Stage Host** → click a preset (e.g. "Grand Inauguration") → "Rehearse in Earphone (IEM)" → "Approve Script" → "Broadcast to Stage PA"
+2. **Personal AI** → select an attendee → ask "What is the Wi-Fi password?" or "When is code freeze?" in Hindi
+3. **Operator** → type "Call unconfirmed speakers for keynote" → approve the task in Operations
+
+---
+
+## ⚠️ Honest Feature Status
+
+| Feature | Status |
+|---------|--------|
+| Stage PA Announcements (Sarvam TTS) | ✅ Live |
+| In-Ear Monitor (IEM) Rehearsal | ✅ Live |
+| Mic I/O & VU Meter | ✅ Live |
+| Attendee Personal AI Chat | ✅ Live (client-side RAG) |
+| Bolna Outbound Calls | ✅ Live (sandbox by default) |
+| Event Operator / AI Planner | ✅ Live |
+| Supabase Persistence | ⚠️ Schema ready; requires env vars |
+| Bolna Webhook Receiver | ⚠️ Planned (Brick 7) |
+| Auth / RBAC | ⚠️ Planned (Brick 2) |
+
+Items marked ⚠️ fall back gracefully to localStorage or sandbox simulation.
 
 ---
 
 ## 📄 License
 
-MIT License. Built for multi-agent voice AI operations.
+MIT License. Built for multi-agent voice AI operations at events and podcasts.
