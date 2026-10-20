@@ -32,14 +32,14 @@ const BULBUL_VOICES: Record<'en-IN' | 'hi-IN' | 'ta-IN', { id: string; label: st
   'en-IN': [
     { id: 'shubh_en_narration', label: 'Shubh (Stage Emcee, Male)' },
     { id: 'simran_en_narration', label: 'Simran (Stage Host, Female)' },
-    { id: 'ashwin_en_sports_energetic', label: 'Ashwin (Energetic Intro, Male)' },
+    { id: 'ashwin_en_sports', label: 'Ashwin (Energetic Intro, Male)' },
     { id: 'aparna_en_companion', label: 'Aparna (Warm Companion, Female)' },
   ],
   'hi-IN': [
     { id: 'shubh_hi_customer', label: 'Shubh (Hindi Formal, Male)' },
-    { id: 'simran_hi_narration', label: 'Simran (Hindi Emcee, Female)' },
+    { id: 'simran_hi_conversation', label: 'Simran (Hindi Emcee, Female)' },
     { id: 'aditya_hi_conversational', label: 'Aditya (Dynamic Conversational, Male)' },
-    { id: 'anand_hi_news', label: 'Anand (Broadcast Style, Male)' },
+    { id: 'mohit_hi_conversational', label: 'Mohit (Broadcast Anchor, Male)' },
   ],
   'ta-IN': [
     { id: 'gokul_ta_narration', label: 'Gokul (Tamil Stage Narration, Male)' },
@@ -47,6 +47,7 @@ const BULBUL_VOICES: Record<'en-IN' | 'hi-IN' | 'ta-IN', { id: string; label: st
     { id: 'aravind_ta_ads', label: 'Aravind (Tamil Dynamic Intro, Male)' },
   ],
 };
+
 
 interface AnnouncementPreset {
   id: string;
@@ -232,7 +233,7 @@ export function StageHostExperience() {
   // Engine: Browser Web Speech vs Sarvam AI
   const [voiceEngine, setVoiceEngine] = useState<'sarvam' | 'browser'>('sarvam');
   const [sarvamLanguage, setSarvamLanguage] = useState<'en-IN' | 'hi-IN' | 'ta-IN'>('hi-IN');
-  const [sarvamSpeaker, setSarvamSpeaker] = useState<string>('simran_hi_narration');
+  const [sarvamSpeaker, setSarvamSpeaker] = useState<string>('simran_hi_conversation');
 
   // Audio I/O Device & Headset Monitor State
   const [audioInputDevices, setAudioInputDevices] = useState<MediaDeviceInfo[]>([]);
