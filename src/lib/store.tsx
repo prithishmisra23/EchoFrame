@@ -147,12 +147,14 @@ export function EchoFrameProvider({ children }: { children: ReactNode }) {
 
       if (storedTasks) {
         const parsedTasks: Task[] = JSON.parse(storedTasks);
-        const hasTbTasks = parsedTasks.some((t) => t.id && t.id.startsWith('task-tb-'));
-        if (!hasTbTasks) {
-          const tbTasks = INITIAL_TASKS.filter((t) => t.id && t.id.startsWith('task-tb-'));
-          parsedTasks.unshift(...tbTasks);
+        const existingTbIds = new Set(parsedTasks.filter((t) => t.id?.startsWith('task-tb-')).map((t) => t.id));
+        const allTbTasks = INITIAL_TASKS.filter((t) => t.id?.startsWith('task-tb-'));
+        const missingTbTasks = allTbTasks.filter((t) => !existingTbIds.has(t.id));
+        if (missingTbTasks.length > 0) {
+          parsedTasks.unshift(...missingTbTasks);
         }
         setTasks(parsedTasks);
+
       } else {
         setTasks(INITIAL_TASKS);
       }
